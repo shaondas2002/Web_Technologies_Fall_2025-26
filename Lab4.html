@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Product Information Boxes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+          Arial, sans-serif;
+        margin: 0;
+        padding: 40px 16px;
+        background: #f6f7fb;
+        color: #222;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 24px;
+        font-size: 1.75rem;
+      }
+
+      .products {
+        text-align: center;
+      }
+
+      .product-card {
+        display: inline-block;
+        /width: 280px;
+        margin: 12px;
+        padding: 16px;
+        border: 1px solid #d9deea;
+        background: #ffffff;
+        text-align: center;
+        vertical-align: top;
+        border-radius: 10px;
+        transition: outline-offset 160ms ease, outline 160ms ease,
+          transform 160ms ease;
+        outline: 0 solid transparent;
+        outline-offset: 0;
+      }
+
+      .product-card:hover {
+        outline: 3px solid #6c8cff;
+        outline-offset: 6px;
+        transform: translateY(-2px);
+      }
+
+      .product-card img {
+        width: 100%;
+        height: 450px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      }
+
+      .product-card h2 {
+        font-size: 1.15rem;
+        margin: 6px 0 8px;
+      }
+
+      .product-card p.description {
+        font-size: 0.95rem;
+        line-height: 1.35;
+        margin: 0 0 10px;
+        color: #4a4f5b;
+      }
+
+      .product-card .price {
+        font-weight: 700;
+        margin: 0 0 14px;
+      }
+
+      .product-card .buy-btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: #2f62ff;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .product-card .buy-btn:focus-visible {
+        outline: 3px solid #111;
+        outline-offset: 4px;
+      }
+
+      @media (max-width: 340px) {
+        .product-card {
+          width: 94%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Featured Products</h1>
+
+    <section class="products">
+      <article class="product-card">
+        <img src="Laptop.jpeg" width="500" height="1000" />
+        <h2>Laptop</h2>
+        <p class="description">
+          Powerful performance for work, study, and play with an all-day
+          battery.
+        </p>
+        <p class="price">150000 TK</p>
+        <a class="buy-btn" href="google.com" aria-label="Buy Laptop now"
+          >Buy Now</a
+        >
+      </article>
+
+      <article class="product-card">
+        <img src="Headphone.jpg" width="500" height="600" />
+        <h2>Headphones</h2>
+        <p class="description">
+          Immersive sound and active noise cancellation in a lightweight design.
+        </p>
+        <p class="price">12000 TK</p>
+        <a class="buy-btn" href="#" aria-label="Buy Wave Headphones now"
+          >Buy Now</a
+        >
+      </article>
+
+      <article class="product-card">
+        <img src="Smartwatch.jpg" width="500" height="600" />
+        <h2>Smartwatch</h2>
+        <p class="description">
+          Track health metrics, get notifications, and stay connected on the go.
+        </p>
+        <p class="price">30000 TK</p>
+        <a class="buy-btn" href="#" aria-label="Buy Smartwatch now">Buy Now</a>
+      </article>
+    </section>
+  </body>
+</html>
