@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 20px;
+      }
+      .page {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333333;
+      }
+      p.subtitle {
+        text-align: center;
+        color: #666666;
+        margin-top: -10px;
+        margin-bottom: 20px;
+      }
+      form {
+        display: grid;
+        gap: 14px;
+      }
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      label {
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      input[type="text"],
+      input[type="email"] {
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid #ccd1e3;
+        font: inherit;
+      }
+
+      .submit-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .btn-primary {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 6px;
+        background-color: #4caf50;
+        color: white;
+        font-size: 0.95rem;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background-color: #45a049;
+      }
+
+      .error {
+        font-size: 0.8rem;
+        color: red;
+        min-height: 1em;
+      }
+      .error-field {
+        border-color: red !important;
+      }
+      .success-message {
+        font-size: 0.85rem;
+        color: green;
+        min-height: 1em;
+      }
+      .global-error {
+        font-size: 0.85rem;
+        color: red;
+        min-height: 1em;
+        margin-top: 4px;
+      }
+
+      .attendance-options label {
+        font-weight: normal;
+        margin-right: 10px;
+      }
+
+      .analytics-section {
+        margin-top: 24px;
+        border-top: 1px solid #dddddd;
+        padding-top: 14px;
+      }
+
+      .btn-outline {
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #333;
+        background-color: #fff;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      .btn-outline:hover {
+        background-color: #f1f1f1;
+      }
+      #analytics-panel {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 6px;
+        background-color: #f7f7f7;
+        display: none;
+      }
+      .analytics-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        margin: 4px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h1>Global Tech Connect</h1>
+      <p class="subtitle">Event Registration</p>
+
+      <form id="registration-form" novalidate>
+        <div class="field-group">
+          <label for="fullName">Full Name *</label>
+          <input type="text" id="fullName" maxlength="100" />
+          <div class="error" id="name-error"></div>
+        </div>
+
+        <div class="field-group">
+          <label for="email">Professional Email *</label>
+          <input type="email" id="email" />
+          <div class="error" id="email-error"></div>
+        </div>
+
+        <div class="field-group">
+          <label for="company">Company / Institution (Optional)</label>
+          <input type="text" id="company" maxlength="100" />
+          <div class="error" id="company-error"></div>
+        </div>
+
+        <div class="field-group">
+          <label>Attendance Type *</label>
+          <div class="attendance-options">
+            <label>
+              <input type="radio" name="attendanceType" value="Virtual" />
+              Virtual
+            </label>
+            <label>
+              <input type="radio" name="attendanceType" value="In-Person" />
+              In-Person
+            </label>
+          </div>
+          <div class="error" id="attendance-error"></div>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn-primary">Register Now</button>
+          <div class="success-message" id="success-message"></div>
+        </div>
+        <div class="global-error" id="global-error"></div>
+      </form>
+
+      <div class="analytics-section">
+        <div class="analytics-header">
+          <button type="button" id="toggle-analytics" class="btn-outline">
+            Show Event Analytics
+          </button>
+        </div>
+
+        <div id="analytics-panel">
+          <div class="analytics-row">
+            <span>Total Registrants</span>
+            <span id="stat-total">0</span>
+          </div>
+          <div class="analytics-row">
+            <span>Virtual</span>
+            <span id="stat-virtual">0</span>
+          </div>
+          <div class="analytics-row">
+            <span>In-Person</span>
+            <span id="stat-inperson">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const registrations = [];
+
+      const form = document.getElementById("registration-form");
+      const nameInput = document.getElementById("fullName");
+      const emailInput = document.getElementById("email");
+      const companyInput = document.getElementById("company");
+      const attendanceInputs = document.querySelectorAll(
+        "input[name='attendanceType']"
+      );
+
+      const nameError = document.getElementById("name-error");
+      const emailError = document.getElementById("email-error");
+      const companyError = document.getElementById("company-error");
+      const attendanceError = document.getElementById("attendance-error");
+      const globalError = document.getElementById("global-error");
+      const successMessage = document.getElementById("success-message");
+
+      const toggleAnalyticsBtn = document.getElementById("toggle-analytics");
+      const analyticsPanel = document.getElementById("analytics-panel");
+      const statTotal = document.getElementById("stat-total");
+      const statVirtual = document.getElementById("stat-virtual");
+      const statInPerson = document.getElementById("stat-inperson");
+
+      function setError(inputEl, errorEl, message) {
+        if (message) {
+          if (inputEl) inputEl.classList.add("error-field");
+          errorEl.textContent = message;
+        } else {
+          if (inputEl) inputEl.classList.remove("error-field");
+          errorEl.textContent = "";
+        }
+      }
+
+      function validateName() {
+        const value = nameInput.value.trim();
+        if (value.length < 6 || value.length > 100) {
+          setError(
+            nameInput,
+            nameError,
+            "Name must be between 6 and 100 characters."
+          );
+          return false;
+        }
+        setError(nameInput, nameError, "");
+        return true;
+      }
+
+      function validateEmail() {
+        const value = emailInput.value.trim();
+        const atIndex = value.indexOf("@");
+        const dotIndex = value.lastIndexOf(".");
+        const valid =
+          value.length > 0 &&
+          atIndex > 0 &&
+          dotIndex > atIndex + 1 &&
+          dotIndex < value.length - 1;
+        if (!valid) {
+          setError(
+            emailInput,
+            emailError,
+            "Please enter a valid professional email address."
+          );
+          return false;
+        }
+        setError(emailInput, emailError, "");
+        return true;
+      }
+
+      function validateCompany() {
+        const value = companyInput.value;
+        if (value.length > 100) {
+          setError(companyInput, companyError, "Maximum 100 characters.");
+          return false;
+        }
+        setError(companyInput, companyError, "");
+        return true;
+      }
+
+      function getSelectedAttendance() {
+        let selected = null;
+        attendanceInputs.forEach((input) => {
+          if (input.checked) selected = input.value;
+        });
+        return selected;
+      }
+
+      function validateAttendance() {
+        const selected = getSelectedAttendance();
+        if (!selected) {
+          setError(
+            null,
+            attendanceError,
+            "Please select your attendance type."
+          );
+          return false;
+        }
+        setError(null, attendanceError, "");
+        return true;
+      }
+
+      nameInput.addEventListener("input", validateName);
+      emailInput.addEventListener("input", validateEmail);
+      companyInput.addEventListener("input", validateCompany);
+      attendanceInputs.forEach((input) => {
+        input.addEventListener("change", validateAttendance);
+      });
+
+      function clearMessages() {
+        globalError.textContent = "";
+        successMessage.textContent = "";
+      }
+
+      function updateStats() {
+        const total = registrations.length;
+        const virtualCount = registrations.filter(
+          (r) => r.attendance === "Virtual"
+        ).length;
+        const inPersonCount = registrations.filter(
+          (r) => r.attendance === "In-Person"
+        ).length;
+
+        statTotal.textContent = total;
+        statVirtual.textContent = virtualCount;
+        statInPerson.textContent = inPersonCount;
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        clearMessages();
+
+        const okName = validateName();
+        const okEmail = validateEmail();
+        const okCompany = validateCompany();
+        const okAttendance = validateAttendance();
+
+        if (!okName || !okEmail || !okCompany || !okAttendance) {
+          return;
+        }
+
+        const registration = {
+          name: nameInput.value.trim(),
+          email: emailInput.value.trim(),
+          company: companyInput.value.trim() || null,
+          attendance: getSelectedAttendance(),
+        };
+
+        registrations.push(registration);
+        updateStats();
+
+        form.reset();
+        nameInput.classList.remove("error-field");
+        emailInput.classList.remove("error-field");
+        companyInput.classList.remove("error-field");
+        nameError.textContent = "";
+        emailError.textContent = "";
+        companyError.textContent = "";
+        attendanceError.textContent = "";
+
+        successMessage.textContent = "Registration successful!";
+      });
+
+      toggleAnalyticsBtn.addEventListener("click", function () {
+        const isVisible = analyticsPanel.style.display === "block";
+        if (isVisible) {
+          analyticsPanel.style.display = "none";
+          toggleAnalyticsBtn.textContent = "Show Event Analytics";
+        } else {
+          analyticsPanel.style.display = "block";
+          toggleAnalyticsBtn.textContent = "Hide Event Analytics";
+          updateStats();
+        }
+      });
+    </script>
+  </body>
+</html>
